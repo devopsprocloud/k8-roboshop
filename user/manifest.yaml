@@ -1,0 +1,56 @@
+# Creating ConfigMap
+apiVersion: v1 
+kind: ConfigMap 
+metadata: 
+  name: user 
+  namespace: roboshop 
+data: 
+  MONGO: "true"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+  namespace: roboshop 
+  labels:
+    app: user
+    project: roboshop 
+    tier: app
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector: # replica labels 
+    matchLabels:
+      app: user
+      project: roboshop 
+      tier: app
+  template: # pod-definition
+    metadata:
+      labels:
+        app: user
+        project: roboshop 
+        tier: app
+    spec:
+      containers:
+      - name: user
+        image: devopsprocloud/user:v1
+        imagePullPolicy: Always 
+        envFrom: 
+        - configMapRef: 
+            name: user 
+--- 
+# Creating service
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: user
+  namespace: roboshop 
+spec: 
+  selector: 
+   app: user  
+   project: roboshop 
+   tier: app  
+  ports:
+  - protocol: TCP 
+    port: 8080 #service port 
+    targetPort: 8080 #container port 
