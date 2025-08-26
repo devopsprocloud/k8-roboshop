@@ -1,0 +1,57 @@
+# Creating ConfigMap
+apiVersion: v1 
+kind: ConfigMap 
+metadata: 
+  name: shipping 
+  namespace: roboshop 
+data: 
+  CART_ENDPOINT: cart:8080
+  DB_HOST: mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shipping
+  namespace: roboshop 
+  labels:
+    app: shipping
+    project: roboshop 
+    tier: app
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector: # replica labels 
+    matchLabels:
+      app: shipping
+      project: roboshop 
+      tier: app
+  template: # pod-definition
+    metadata:
+      labels:
+        app: shipping
+        project: roboshop 
+        tier: app
+    spec:
+      containers:
+      - name: shipping
+        image: devopsprocloud/shipping:v1
+        imagePullPolicy: Always 
+        envFrom: 
+        - configMapRef: 
+            name: shipping 
+--- 
+# Creating service
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: shipping
+  namespace: roboshop 
+spec: 
+  selector: 
+   app: shipping  
+   project: roboshop 
+   tier: app  
+  ports:
+  - protocol: TCP 
+    port: 8080 #service port 
+    targetPort: 8080 #container port 
