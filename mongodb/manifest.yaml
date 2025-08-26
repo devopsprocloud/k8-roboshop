@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: roboshop 
+  labels:
+    app: mongodb
+    project: roboshop 
+    tier: db
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector: # replica labels 
+    matchLabels:
+      app: mongodb
+      project: roboshop 
+      tier: db
+  template: # pod-definition
+    metadata:
+      labels:
+        app: mongodb
+        project: roboshop 
+        tier: db
+    spec:
+      containers:
+      - name: mongodb
+        image: devopsprocloud/mongodb:v1
+        imagePullPolicy: Always 
+--- 
+
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: mongodb-service
+  namespace: roboshop 
+spec: 
+  selector: 
+   app: mongodb  
+   project: roboshop 
+   tier: db  
+  ports:
+  - protocol: TCP 
+    port: 27017 #service port 
+    targetPort: 27017 #container port 
