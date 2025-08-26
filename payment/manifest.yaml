@@ -1,58 +1,58 @@
+# Creating ConfigMap
 apiVersion: v1 
-kind: Secret 
+kind: Secret
 metadata: 
-  name: mysql
-  namespace: roboshop
-type: Opaque  
+  name: payment 
+  namespace: roboshop 
+type: Opaque
 data: 
-  MYSQL_ROOT_PASSWORD: Um9ib1Nob3BAMQ==
-  MYSQL_USER: c2hpcHBpbmc=
-  MYSQL_PASSWORD: Um9ib1Nob3BAMQ==
+  AMQP_USER: cm9ib3Nob3A=
+  AMQP_PASS: cm9ib3Nob3AxMjM=
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: payment
   namespace: roboshop 
   labels:
-    app: mysql
+    app: payment
     project: roboshop 
-    tier: db
+    tier: app
 spec:
   # modify replicas according to your case
   replicas: 1
   selector: # replica labels 
     matchLabels:
-      app: mysql
+      app: payment
       project: roboshop 
-      tier: db
+      tier: app
   template: # pod-definition
     metadata:
       labels:
-        app: mysql
+        app: payment
         project: roboshop 
-        tier: db
+        tier: app
     spec:
       containers:
-      - name: mysql
-        image: devopsprocloud/mysql:v1
+      - name: payment
+        image: devopsprocloud/payment:v1
         imagePullPolicy: Always 
         envFrom: 
-        - secretRef: 
-            name: mysql
+        - configMapRef: 
+            name: payment 
 --- 
-
+# Creating service
 apiVersion: v1 
 kind: Service 
 metadata: 
-  name: mysql
+  name: payment
   namespace: roboshop 
 spec: 
   selector: 
-   app: mysql  
+   app: payment  
    project: roboshop 
-   tier: db  
+   tier: app  
   ports:
   - protocol: TCP 
-    port: 3306 #service port 
-    targetPort: 3306 #container port 
+    port: 8080 #service port 
+    targetPort: 8080 #container port 
