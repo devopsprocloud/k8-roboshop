@@ -5,6 +5,8 @@ metadata:
 type: Opaque  
 data: 
   MYSQL_ROOT_PASSWORD: Um9ib1Nob3BAMQ==
+  MYSQL_USER: c2hpcHBpbmc=
+  MYSQL_PASSWORD: Um9ib1Nob3BAMQ==
 ---
 apiVersion: apps/v1
 kind: Deployment
