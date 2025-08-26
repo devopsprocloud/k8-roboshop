@@ -1,0 +1,58 @@
+# Creating ConfigMap
+apiVersion: v1 
+kind: ConfigMap 
+metadata: 
+  name: cart 
+  namespace: roboshop 
+data: 
+  REDIS_HOST: "redis"
+  CATALOGUE_HOST: "catalogue"
+  CATALOGUE_PORT: "8080"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart
+  namespace: roboshop 
+  labels:
+    app: cart
+    project: roboshop 
+    tier: app
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector: # replica labels 
+    matchLabels:
+      app: cart
+      project: roboshop 
+      tier: app
+  template: # pod-definition
+    metadata:
+      labels:
+        app: cart
+        project: roboshop 
+        tier: app
+    spec:
+      containers:
+      - name: cart
+        image: devopsprocloud/cart:v1
+        imagePullPolicy: Always 
+        envFrom: 
+        - configMapRef: 
+            name: cart 
+--- 
+# Creating service
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: cart
+  namespace: roboshop 
+spec: 
+  selector: 
+   app: cart  
+   project: roboshop 
+   tier: app  
+  ports:
+  - protocol: TCP 
+    port: 8080 #service port 
+    targetPort: 8080 #container port 
