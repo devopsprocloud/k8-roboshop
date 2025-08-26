@@ -112,13 +112,6 @@ spec:
         project: roboshop 
         tier: web
     spec:
-      volumes: 
-      - name: nginx-conf 
-        ConfigMap: 
-          name: web 
-          items: 
-          - key: nginx.conf 
-            path: nginx.conf 
       containers:
       - name: web
         image: devopsprocloud/web:v1
@@ -130,7 +123,14 @@ spec:
           - name: nginx-conf 
             mountPath: /etc/nginx/nginx.conf 
             subPath: nginx.conf 
-            readOnly: true     
+            readOnly: true    
+      volumes: 
+      - name: nginx-conf 
+        ConfigMap: 
+          name: web 
+          items: 
+          - key: nginx.conf 
+            path: nginx.conf  
 --- 
 # Creating service
 apiVersion: v1 
