@@ -18,6 +18,8 @@ data:
   USER_HOST: user
   USER_PORT: "8080"
   AMQP_HOST: rabbitmq 
+  CART_HOST: cart
+  CART_PORT: "8080"
 
 ---
 apiVersion: apps/v1
